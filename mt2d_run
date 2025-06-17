@@ -1,0 +1,71 @@
+#!/bin/sh
+# runs a single simulation with fixed N and tau
+ulimit -c unlimited
+#g++ -O3 -fopenmp -msse3 --param max-inline-insns-auto=4000 ../mt2d_v2.cpp -o mt2d
+fl=422
+
+drip=$1 # depth
+ndrip=$2 # number of pipelines in 1 m 
+tau=$3
+N=$4
+idx=$5
+et=$6 # ending time
+
+row_dist=$7 # in 0.01cm
+dom_length=$8 # in cm
+
+if [ $9 -eq 1 ];
+then
+    fl=294 # generate bmp\js
+fi
+
+fi_idx=${10} # index of input files
+
+additional=${11} # additional parameters for mt2d
+
+# string for plants
+if [ $row_dist -le 0 ];
+then
+    row_dist=$(( 0 - $row_dist ))
+    ps=`echo "scale=4;${row_dist} / 20000.0" | bc|sed 's/^\./0./'`_0.05
+    i=$(( ${row_dist} + ${row_dist} / 2 ))
+else
+    row_dist=$(( $row_dist ))
+    ps=`echo "scale=4;${row_dist} / 10000.0" | bc|sed 's/^\./0./'`_0.05
+    i=$(( ${row_dist} * 2 ))
+fi
+while [ $i -lt $(( $dom_length * 100 )) ];
+do
+    ps=${ps}_`echo "scale=4;${i} / 10000.0" | bc|sed 's/^\./0./'`_0.05
+    i=$(( $i + $row_dist ))
+done
+# string for pipelines position
+dist=$(( 100 * ${dom_length} / $ndrip ))
+hdist=$(( $dist / 2 ))
+s=`echo "scale=4;${hdist} / 10000.0" | bc|sed 's/^\./0./'`_0.05
+i=1
+while [ $i -lt $ndrip ];
+do
+    p=$(( $hdist + $i * $dist ))
+    s=${s}_`echo "scale=4;${p} / 10000.0" | bc|sed 's/^\./0./'`_0.05
+    i=$(( $i+1 ))
+done
+M=$(( $N * $dom_length / 100 ))
+echo "distance between pipelines " $(( $dist / 100 )) "M" $M 
+
+if [ $fl -eq 294 ];
+then
+    rm res.js
+fi
+
+./mt2d mode 1 Tau $tau Om 450 Sm 450 Tm $et Fit 2 to_fit 944 fl $fl BS 1 NB $N M $M K 2 I 0 B 0 \
+Hbottom -0.75 fi_file fit_input_${fi_idx}.txt \
+plants $ps rootR 0.30 sprinklers $s sprinklerR 0.05 drip $drip vgm vgm_2020_2.txt stDIV 1 stEPS 1e-7 stMI 0 st2MI 0 \
+newrand 1 stMintau 10 rl_file root_length_${fi_idx}.txt pv_file pv_best.txt filename fit$idx ls_max_iter 20 $additional > log$idx.txt
+
+if [ $fl -eq 294 ];
+then
+    cat res_*.js > res.js
+    rm res_*.js res_*.txt
+fi
+cat log$idx.txt | grep "irrigation amount"| cut -d" " -f4 | awk '{s+=$1} END {printf "%f\n", s}'

@@ -1,0 +1,17 @@
+{
+"__mins":"minimax variables values",
+"__maxs":"maximal variables values",
+"mins":[0.00000005,0.005,0.001,0.001,10 ,0,0.2,0.1],
+"maxs":[0.00000500,0.500,0.100,0.100,100,120,1.0,10.0],
+
+"__gen_niter":"number of genetic algorithm iterations",
+"__gen_npop":"size of genetic algorithm population",
+"__gen_rcross":"crossover execution probability",
+"__gen_rmut":"mutation execution probability",
+"__gen_parallel":"parallel mode \n(0 - only in mt2d, \n 2 - also among solutions)",
+"gen_niter":10,
+"gen_npop":20,
+"gen_rcross":0.75,
+"gen_rmut":0.05,
+"gen_parallel": 0
+}
