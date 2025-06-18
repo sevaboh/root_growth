@@ -2,10 +2,15 @@
 Fractional-order moisture transport solver with root growth simulation
 
 Moisture transport and root growth solver with PSO for parameters identification:
+
 mt2d_root_growing_hg.cpp - main file and moisture transport model + PSO for parameters identification
+
 root_growing.h - root growing model
+
 test2.sh - a script to run different parameters identification scenarios
+
 test.sh - a script to run checks of solution quality with parameter values obtained by test2.sh
+
 
 Root system optimization:
 rg_genetic.py - a genetic algorithm for the selection of parameters for the root system growth model
