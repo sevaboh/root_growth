@@ -1,12 +1,10 @@
 #!/bin/sh
 #g++ -O3 -fopenmp --param max-inline-insns-auto=4000 mt2d_root_growing_hg.cpp -o mt2d
 
-#./rg_genetic.py > genetic_log1.txt
+./rg_genetic.py > genetic_log1.txt
 
 ./run_once.sh best `tail -n 2 genetic_log1.txt | head -n 1 | sed 's/\,//g' | sed 's/\[//g' | sed 's/\]//g'`
-#./run_once.sh best `tail -n 2 genetic_log.txt | head -n 1 | sed 's/\,//g' | sed 's/\[//g' | sed 's/\]//g'` _13_08 _13_08
-#./run_once.sh best `tail -n 2 genetic_log.txt | head -n 1 | sed 's/\,//g' | sed 's/\[//g' | sed 's/\]//g'` _20_09 _20_09
-exit
+
 ./run_once.sh 0 `tail -n 2 genetic_log.txt | head -n 1 | sed 's/\,//g' | sed 's/\[//g' | sed 's/\]//g'`
 ./run_once.sh 1 `tail -n 2 genetic_log.txt | head -n 1 | sed 's/\,//g' | sed 's/\[//g' | sed 's/\]//g'`
 ./run_once.sh 2 `tail -n 2 genetic_log.txt | head -n 1 | sed 's/\,//g' | sed 's/\[//g' | sed 's/\]//g'`
